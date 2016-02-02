@@ -1,0 +1,60 @@
+---
+pt-BR:
+  views:
+    pagination:
+      first: "&laquo; Primeira"
+      last: "Última &raquo"
+      previous: "&lsquo; Anterior"
+      next: "Próxima &rsaquo;"
+      truncate: "..."
+  links:
+    back: Voltar
+    edit: Editar
+  users:
+    new:
+      title: Cadastro
+      edit: Editar cadastro
+    show:
+      title: "Perfil: %{user_nae}"
+      edit: "Editar Perfil"
+      location: "Localização: %{location}"
+      bio: "Bio: %{bio}"
+  rooms:
+    new:
+      title: Novo Quarto
+      edit: Editar quarto
+    show:
+      edit: 'Editar'
+      back: 'Voltar'
+
+  activerecord:
+    models:
+      student: Estudante
+      course: Curso
+      classroom: Mátricula
+    attributes:
+      student:
+        name: Nome
+        register_number: Numero de registro
+        created_at: Cadastrado em
+      course:
+        name: Nome
+        description: Descrição
+        created_at: Criado em
+      classroom:
+        student_id: Estudante
+        course_id: Curso
+        entry_at: Data da entrada
+
+
+  helpers:
+    actions: Ações
+    links:
+      cancel: Cancelar
+      back: Voltar
+      edit: Editar
+      destroy: Deletar
+      new: Novo
+    titles:
+      new: Novo %{model}
+      edit: Editando %{model}

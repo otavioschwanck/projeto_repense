@@ -4,12 +4,14 @@ class StudentsController < ApplicationController
   # GET /students
   # GET /students.json
   def index
-    @students = Student.all
+    @search_value = params[:search]
+    @students = Student.search(@search_value).page(params[:page]).per(25)
   end
 
   # GET /students/1
   # GET /students/1.json
   def show
+    @classrooms = @student.classrooms.page(params[:page]).per(10)
   end
 
   # GET /students/new
