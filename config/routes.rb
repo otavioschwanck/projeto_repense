@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'home/index'
+  root 'home#index'
   resources :courses
   resources :students do
     # Poderia ter feito um novo resource para a classroom, mas preferi deixar
