@@ -15,7 +15,9 @@
   <dd> <%= @classrooms.count %></dd>
 
 </dl>
-
+<% if @student.status == 1 %>
+  <%= link_to "Nova mátricula", student_new_enrollment_path(@student), class: "btn btn-primary" %>
+<% end %>
 <%= link_to t('.back', :default => t("helpers.links.back")),
               students_path, :class => 'btn btn-default'  %>
 <%= link_to t('.edit', :default => t("helpers.links.edit")),
@@ -23,21 +25,37 @@
 <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
               student_path(@student),
               :method => 'delete',
-              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Fazendo isso, todas as mátriculas serão perdidas.  Você tem certeza disso?')) },
               :class => 'btn btn-danger' %>
+
 
 <hr>
 
 <% if @classrooms.count != 0 %>
   <table class = "table">
     <tr>
-      <td>
+      <th>
         Curso
-      </td>
-      <td>
-        Data de entrada
-      </td>
+      </th>
+      <th>
+        Data que foi vinculado
+      </th>
+      <th>
+        Ações
+      </th>
     </tr>
-
+    <% @classrooms.each do |classroom| %>
+      <tr>
+        <td>
+          <%= link_to classroom.course.name, classroom.course %> <%= "(Inativo)" if classroom.course.status == 2  %>
+        </td>
+        <td>
+          <%= l classroom.created_at, format: :short %>
+        </td>
+        <td>
+          <%= link_to "Remover mátricula", student_destroy_enrollment_path(@student, classroom_id: classroom), method: :delete, class: "btn btn-danger btn-xs", data: {:confirm => "Você realmente deseja remover a mátricula?"} %>
+        </td>
+      </tr>
+    <% end %>
   </table>
 <% end %>

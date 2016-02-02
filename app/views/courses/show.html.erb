@@ -1,19 +1,60 @@
-<p id="notice"><%= notice %></p>
+<% title "Curso: #{@course.name} - Repense" %>
+<%- model_class = Course -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.titleize %></h1>
+</div>
 
-<p>
-  <strong>Name:</strong>
-  <%= @course.name %>
-</p>
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:name) %>:</strong></dt>
+  <dd><%= @course.name %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:description) %>:</strong></dt>
+  <dd><%= @course.description %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:status) %>:</strong></dt>
+  <dd><%= Course::STATUS.key(@course.status) %></dd>
+  <dt><strong>Numero de estudantes:</strong></dt>
+  <dd><%= @course.classrooms.count %></dd>
+</dl>
 
-<p>
-  <strong>Description:</strong>
-  <%= @course.description %>
-</p>
+<%= link_to t('.back', :default => t("helpers.links.back")),
+              courses_path, :class => 'btn btn-default'  %>
+<%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_course_path(@course), :class => 'btn btn-default' %>
+<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+              course_path(@course),
+              :method => 'delete',
+              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Você tem certeza disso?  Todas as mátriculas desse curso também serão deletadas.')) },
+              :class => 'btn btn-danger' %>
 
-<p>
-  <strong>Status:</strong>
-  <%= @course.status %>
-</p>
+<hr>
 
-<%= link_to 'Edit', edit_course_path(@course) %> |
-<%= link_to 'Back', courses_path %>
+<% if @classrooms.count != 0 %>
+<h3>Alunos no curso</h3>
+  <table class = "table">
+    <tr>
+      <th>
+        Aluno
+      </th>
+      <th>
+        Data da mátricula
+      </th>
+      <th>
+        Ações
+      </th>
+    </tr>
+    <% @classrooms.each do |classroom| %>
+      <tr>
+        <td>
+          <%= link_to classroom.student.name, classroom.student %> <%= "(Inativo)" if classroom.student.status == 2 %>
+        </td>
+        <td>
+          <%= l classroom.created_at, format: :short %>
+        </td>
+        <td>
+          <%= link_to "Remover mátricula", student_destroy_enrollment_path(classroom.student, classroom_id: classroom), method: :delete, class: "btn btn-danger btn-xs", data: {:confirm => "Você realmente deseja remover a mátricula?"} %>
+        </td>
+      </tr>
+    <% end %>
+  </table>
+<% else %>
+  <h4>Nenhum aluno vinculado.  Para vincular, vá até a <%= link_to "listagem de alunos", students_path %>. </h4>
+<% end %>

@@ -1,5 +1,9 @@
 class StudentsController < ApplicationController
-  before_action :set_student, only: [:show, :edit, :update, :destroy]
+  before_action :set_student, only: [:show, :edit, :update, :destroy, :create_enrollment, :new_enrollment, :destroy_enrollment]
+  before_action only: [:new_enrollment, :create_enrollment] do
+    redirect_to @student, alert: "Estudante precisa estar ativo" if @student.status == 2
+  end
+
 
   # GET /students
   # GET /students.json
@@ -12,6 +16,28 @@ class StudentsController < ApplicationController
   # GET /students/1.json
   def show
     @classrooms = @student.classrooms.page(params[:page]).per(10)
+  end
+
+  def new_enrollment
+    @classroom = @student.classrooms.build
+  end
+
+  def create_enrollment
+    @classroom = @student.classrooms.build(classroom_params)
+    if @classroom.save
+      redirect_to @student, notice: "Aluno matriculado com sucesso."
+    else
+      render :new_enrollment
+    end
+  end
+
+  def destroy_enrollment
+    @classroom = @student.classrooms.find(params[:classroom_id])
+    if @classroom.destroy
+      redirect_to @student, notice: "Mátricula removida com sucesso."
+    else
+      redirect_to @student, alert: "Não foi possível remover a mátricula."
+    end
   end
 
   # GET /students/new
@@ -30,7 +56,7 @@ class StudentsController < ApplicationController
 
     respond_to do |format|
       if @student.save
-        format.html { redirect_to @student, notice: 'Student was successfully created.' }
+        format.html { redirect_to @student, notice: 'Estudando criado com sucesso.' }
         format.json { render :show, status: :created, location: @student }
       else
         format.html { render :new }
@@ -44,7 +70,7 @@ class StudentsController < ApplicationController
   def update
     respond_to do |format|
       if @student.update(student_params)
-        format.html { redirect_to @student, notice: 'Student was successfully updated.' }
+        format.html { redirect_to @student, notice: 'Estudando atualizado com sucesso.' }
         format.json { render :show, status: :ok, location: @student }
       else
         format.html { render :edit }
@@ -58,7 +84,7 @@ class StudentsController < ApplicationController
   def destroy
     @student.destroy
     respond_to do |format|
-      format.html { redirect_to students_url, notice: 'Student was successfully destroyed.' }
+      format.html { redirect_to students_url, notice: 'Estudando deletado com sucesso' }
       format.json { head :no_content }
     end
   end
@@ -66,11 +92,16 @@ class StudentsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_student
-      @student = Student.find(params[:id])
+      @student = Student.where(id: params[:id]).first
+      @student = Student.find(params[:student_id]) if @student.nil?
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def student_params
       params.require(:student).permit(:name, :register_number, :status)
+    end
+
+    def classroom_params
+      params.require(:classroom).permit(:course_id)
     end
 end

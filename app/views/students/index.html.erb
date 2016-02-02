@@ -45,8 +45,9 @@
           <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
                       student_path(student),
                       :method => :delete,
-                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Fazendo isso, todas as mátriculas serão perdidas.  Você tem certeza disso?')) },
                       :class => 'btn btn-xs btn-danger' %>
+          <%= link_to "Nova mátricula", student_new_enrollment_path(student), class: "btn btn-primary btn-xs" %>
         </td>
       </tr>
     <% end %>

@@ -1,0 +1,9 @@
+<% title "Nova mátricula para #{@student.name} - Repense" %>
+<h2>Nova mátricula para <%= link_to @student.name, @student %></h2>
+<%= simple_form_for @classroom, url: student_create_enrollment_path(@student)  do |f| %>
+  <%= f.input :course_id, collection: @student.avaiable_courses %>
+  <%= f.submit class: "btn btn-primary" %>
+<% end %>
+<br>
+<%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+              @student, :class => 'btn btn-default' %>

@@ -1,31 +1,53 @@
-<p id="notice"><%= notice %></p>
+<% title "Listando cursos - Repense" %>
+<%- model_class = Course -%>
+<div class="page-header">
+  <h1><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h1>
+</div>
 
-<h1>Listing Courses</h1>
+<%= form_tag courses_path, method: :get do |f| %>
+  <%= search_field_tag :search, nil, {class: "form-control", placeholder: "Digite aqui sua busca (Por nome ou descrição)"} %><br>
+  <%= submit_tag :pesquisar, class: "btn btn-default" %>
+<% end %>
 
-<table>
+<hr>
+
+<% if @search_value.present? %>
+  <h4>Resultado da busca de "<%= @search_value %>". <%= pluralize(@courses.count, "curso encontrado.", "cursos encontrados.") %></h4>
+<% end %>
+
+<%= link_to t('.new', :default => t("helpers.links.new")),
+            new_course_path,
+            :class => 'btn btn-primary' %>
+
+<%= paginate @courses %>
+<table class="table table-striped">
+
   <thead>
     <tr>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Status</th>
-      <th colspan="3"></th>
+      <th><%= model_class.human_attribute_name(:name) %></th>
+      <th><%= model_class.human_attribute_name(:description) %></th>
+      <th><%= model_class.human_attribute_name(:status) %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
     </tr>
   </thead>
-
   <tbody>
     <% @courses.each do |course| %>
       <tr>
-        <td><%= course.name %></td>
+        <td><%= link_to course.name, course_path(course) %></td>
         <td><%= course.description %></td>
-        <td><%= course.status %></td>
-        <td><%= link_to 'Show', course %></td>
-        <td><%= link_to 'Edit', edit_course_path(course) %></td>
-        <td><%= link_to 'Destroy', course, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= Course::STATUS.key(course.status) %></td>
+        <td><%=l course.created_at %></td>
+        <td>
+          <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                      edit_course_path(course), :class => 'btn btn-default btn-xs' %>
+          <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                      course_path(course),
+                      :method => :delete,
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Você tem certeza disso?  Todas as mátriculas desse curso também serão deletadas.')) },
+                      :class => 'btn btn-xs btn-danger' %>
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
-
-<br>
-
-<%= link_to 'New Course', new_course_path %>
